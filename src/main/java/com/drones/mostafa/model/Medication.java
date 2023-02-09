@@ -17,7 +17,7 @@ public class Medication {
     @Column(name = "id", nullable = false)
     private Integer id;
     private String name;
-    private Long weight;
+    private Integer weight;
     private String code;
 
     private String image;

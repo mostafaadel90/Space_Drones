@@ -20,17 +20,14 @@ public class Drone {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Column(name = "serialNumber", nullable = false ,unique = true ,updatable = false)
+    @Column(name = "serialNumber", unique = true ,updatable = false)
     private String serialNumber;
-    @Column(name = "model", nullable = false)
     @Enumerated(EnumType.STRING)
     private Model model;
-    @Column(name = "weightInGrams", nullable = false )
-    private Integer weightInGrams;
-    @Column(name = "batteryCapacityPercentage", nullable = false)
+    private Integer weightLimitInGrams;
+    private Integer remainingWeight;
     private Integer batteryCapacityPercentage;
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false)
     private State state;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "drone",cascade = CascadeType.ALL)

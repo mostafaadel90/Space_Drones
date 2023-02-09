@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class DroneRegistrationRequest {
     private Model model;
-    private Integer weightInGrams;
+    private Integer weightLimitInGrams;
     private Integer batteryCapacityPercentage;
     private State state;
 }

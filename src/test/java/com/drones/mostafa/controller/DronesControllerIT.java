@@ -54,7 +54,7 @@ public class DronesControllerIT {
     }
 
     @Test
-    void loadMedicationIntoDroneHappy_201_Created() {
+    void loadMedicationsIntoDrone_Happy_201_Created() {
         DroneRegistrationRequest request = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 400, 90, State.IDLE);
         HttpEntity<DroneRegistrationRequest> droneRegistrationRequestEntity = new HttpEntity<>(request);
         ResponseEntity<DroneRegistrationResponse> response = restTemplate.postForEntity(createURLWithPort("/drones"), droneRegistrationRequestEntity, DroneRegistrationResponse.class);
@@ -62,13 +62,15 @@ public class DronesControllerIT {
         assertNotNull(responseBody);
         assertEquals(1, responseBody.getId());
 
-        List<MedicationLoadingRequest> medicationList = Arrays.asList(new MedicationLoadingRequest("MEDICATION_10", 200L, "MED_10", "image_10"),
-                new MedicationLoadingRequest("MEDICATION_20", 200L, "MED_20", "image_20"));
+        List<MedicationLoadingRequest> medicationList = Arrays.asList(new MedicationLoadingRequest("MEDICATION_10", 100, "MED_10", "image_10"),
+                new MedicationLoadingRequest("MEDICATION_20", 200, "MED_20", "image_20"));
         HttpEntity<List<MedicationLoadingRequest>> medicationsRequestEntity = new HttpEntity<>(medicationList);
         ResponseEntity<Drone> loadedDroneResponse = restTemplate.postForEntity(createURLWithPort("/drones/{id}/medications"), medicationsRequestEntity, Drone.class, responseBody.getId());
         assertEquals(HttpStatus.CREATED, loadedDroneResponse.getStatusCode());
         Drone loadedDrone = loadedDroneResponse.getBody();
-
+        assertEquals(2 ,loadedDrone.getMedications().size());
+        assertEquals(100,loadedDrone.getRemainingWeight());
+        assertEquals(State.LOADED,loadedDrone.getState());
     }
 
     private String createURLWithPort(String uri) {

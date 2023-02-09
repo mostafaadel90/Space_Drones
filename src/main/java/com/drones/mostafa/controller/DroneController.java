@@ -32,10 +32,9 @@ public class DroneController {
     }
     //Loading a drone with medication items
     @PostMapping(value = "/drones/{id}/medications", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Drone> loadDroneWithMedications(@PathVariable String id, @RequestBody List<MedicationLoadingRequest> medications){
+    public ResponseEntity<Drone> loadMedicationsIntoDrone(@PathVariable String id, @RequestBody List<MedicationLoadingRequest> medications){
         log.info("Drone Loading with Medications {} Request Received for Drone with Id {}",medications.toString(),id);
-        Drone drone = new Drone();
-        drone.setSerialNumber("Test");
+        Drone drone = droneService.loadMedicationsIntoDrone(Integer.valueOf(id), medications);
         return new ResponseEntity<>(drone, HttpStatus.CREATED);
     }
     //checking loaded medication items for a given drone

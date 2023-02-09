@@ -9,7 +9,7 @@ import lombok.Data;
 public class MedicationLoadingRequest {
     @Pattern(regexp = "^[A-Za-z0-9_\\-]+",message = "allowed only letters, numbers, '-', '_'")
     private String name;
-    private Long weight;
+    private Integer weight;
     @Pattern(regexp = "^[A-Z0-9_]+",message = "allowed only upper case letters, numbers and '_'")
     private String code;
 
