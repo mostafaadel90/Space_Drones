@@ -6,13 +6,15 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class Drone {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,6 +33,9 @@ public class Drone {
     @Column(name = "state", nullable = false)
     private State state;
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "drone",cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Medication> medications = new ArrayList<>();
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
