@@ -2,7 +2,7 @@ package com.drones.mostafa.controller;
 
 import com.drones.mostafa.dto.DroneRegistrationRequest;
 import com.drones.mostafa.dto.DroneRegistrationResponse;
-import jakarta.validation.Valid;
+import com.drones.mostafa.service.DroneService;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,17 +12,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 @RestController
 @AllArgsConstructor
 @Slf4j
 public class DroneController {
+    DroneService droneService;
+
     //Register a Drone
     @PostMapping(value = "/drones", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<DroneRegistrationResponse> registerDrone(@RequestBody @NotNull @Valid DroneRegistrationRequest droneRegistrationRequest) {
-        log.info(droneRegistrationRequest.toString());
-        return new ResponseEntity<>(new DroneRegistrationResponse(1,UUID.randomUUID().toString()), HttpStatus.CREATED);
+    public ResponseEntity<DroneRegistrationResponse> registerDrone(@RequestBody @NotNull DroneRegistrationRequest droneRegistrationRequest) {
+        log.info("Drone Registration Request Received {}",droneRegistrationRequest.toString());
+        DroneRegistrationResponse droneRegistrationResponse = droneService.registerDrone(droneRegistrationRequest);
+        return new ResponseEntity<>(droneRegistrationResponse, HttpStatus.CREATED);
     }
     //Loading a drone with medication items
     //checking loaded medication items for a given drone
