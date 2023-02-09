@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class DroneRegistrationRequest {
-    Model model;
-    Integer weightInGrams;
-    Integer batteryCapacityPercentage;
-    State state;
+    private Model model;
+    private Integer weightInGrams;
+    private Integer batteryCapacityPercentage;
+    private State state;
 }
