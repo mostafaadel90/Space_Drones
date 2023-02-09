@@ -6,6 +6,7 @@ import com.drones.mostafa.dto.DroneRegistrationResponse;
 import com.drones.mostafa.dto.MedicationLoadingRequest;
 import com.drones.mostafa.enums.Model;
 import com.drones.mostafa.enums.State;
+import com.drones.mostafa.model.Drone;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,8 +65,10 @@ public class DronesControllerIT {
         List<MedicationLoadingRequest> medicationList = Arrays.asList(new MedicationLoadingRequest("MEDICATION_10", 200L, "MED_10", "image_10"),
                 new MedicationLoadingRequest("MEDICATION_20", 200L, "MED_20", "image_20"));
         HttpEntity<List<MedicationLoadingRequest>> medicationsRequestEntity = new HttpEntity<>(medicationList);
-        ResponseEntity<Void> medicationResponse = restTemplate.postForEntity(createURLWithPort("/drones/{id}/medications"), medicationsRequestEntity, Void.class, responseBody.getId());
-        assertEquals(HttpStatus.CREATED, medicationResponse.getStatusCode());
+        ResponseEntity<Drone> loadedDroneResponse = restTemplate.postForEntity(createURLWithPort("/drones/{id}/medications"), medicationsRequestEntity, Drone.class, responseBody.getId());
+        assertEquals(HttpStatus.CREATED, loadedDroneResponse.getStatusCode());
+        Drone loadedDrone = loadedDroneResponse.getBody();
+
     }
 
     private String createURLWithPort(String uri) {
