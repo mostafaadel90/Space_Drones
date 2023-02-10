@@ -12,6 +12,7 @@ import com.drones.mostafa.repository.DroneRepository;
 import com.drones.mostafa.validator.DroneValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,6 @@ public class DroneServiceImpl implements DroneService {
     private DroneMapper droneMapper;
     private DroneValidator droneValidator;
     private MedicationMapper medicationMapper;
-
     @Override
     public DroneRegistrationResponse registerDrone(DroneRegistrationRequest droneRegistrationRequest) {
         droneValidator.validateNewDrone(droneRegistrationRequest);
@@ -39,13 +39,18 @@ public class DroneServiceImpl implements DroneService {
     public Drone loadMedicationsIntoDrone(Integer droneId, List<MedicationLoadingRequest> medications) {
         Optional<Drone> optionalDrone = droneRepository.findById(droneId);
         if (optionalDrone.isEmpty()) {
-            throw new DroneNotFoundException(String.format("Drone with ID %d is not founded",droneId));
+            throw new DroneNotFoundException(String.format("Drone with ID %d is not found", droneId));
         }
         Drone drone = optionalDrone.get();
-        droneValidator.validateDroneToLoadMedications(drone,medications);
-        List<Medication> medicationsList = medicationMapper.map(medications);
-        drone.setMedications(medicationsList);
-        droneRepository.save(drone);
+        droneValidator.validateDroneToLoadMedications(drone, medications);
+        List<Medication> medicationsList = medicationMapper.map(medications,drone);
+        List<Medication> droneMedications = drone.getMedications();
+        if (CollectionUtils.isEmpty(droneMedications)) {
+            drone.setMedications(medicationsList);
+        } else {
+            droneMedications.addAll(droneMedications.size()-1,medicationsList);
+        }
+        droneRepository.saveAndFlush(drone);
         return drone;
     }
 }

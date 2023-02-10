@@ -30,7 +30,7 @@ public class Drone {
     @Enumerated(EnumType.STRING)
     private State state;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "drone",cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "drone",cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Medication> medications = new ArrayList<>();
     @Override

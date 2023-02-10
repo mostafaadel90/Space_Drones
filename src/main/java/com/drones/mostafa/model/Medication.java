@@ -22,6 +22,7 @@ public class Medication {
 
     private String image;
     @ManyToOne
+    @JoinColumn(name = "drone_id")
     private Drone drone;
 
 }

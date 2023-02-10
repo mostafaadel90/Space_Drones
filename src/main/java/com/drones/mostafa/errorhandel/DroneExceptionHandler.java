@@ -17,7 +17,7 @@ public class DroneExceptionHandler {
     }
 
     @ExceptionHandler(DroneNotFoundException.class)
-    public ResponseEntity<DroneCustomErrorResponse> handleDroneNotFoundException(InvalidInputDataException ex) {
+    public ResponseEntity<DroneCustomErrorResponse> handleDroneNotFoundException(DroneNotFoundException ex) {
         DroneCustomErrorResponse errorResponse = new DroneCustomErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setStatusCode(HttpStatus.NOT_FOUND.value());
@@ -27,16 +27,16 @@ public class DroneExceptionHandler {
     }
 
     @ExceptionHandler(DroneOverLoadedException.class)
-    public ResponseEntity<DroneCustomErrorResponse> handleDroneOverLoadedException(InvalidInputDataException ex) {
+    public ResponseEntity<DroneCustomErrorResponse> handleDroneOverLoadedException(DroneOverLoadedException ex) {
         return getDroneCustomErrorResponseForBadRequest(ex);
     }
 
     @ExceptionHandler(DroneLowBatteryException.class)
-    public ResponseEntity<DroneCustomErrorResponse> handleDroneLowBatteryException(InvalidInputDataException ex) {
+    public ResponseEntity<DroneCustomErrorResponse> handleDroneLowBatteryException(DroneLowBatteryException ex) {
         return getDroneCustomErrorResponseForBadRequest(ex);
     }
 
-    private ResponseEntity<DroneCustomErrorResponse> getDroneCustomErrorResponseForBadRequest(InvalidInputDataException ex) {
+    private ResponseEntity<DroneCustomErrorResponse> getDroneCustomErrorResponseForBadRequest(RuntimeException ex) {
         DroneCustomErrorResponse errorResponse = new DroneCustomErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
