@@ -12,17 +12,14 @@ import java.util.Date;
 @ControllerAdvice
 public class DroneExceptionHandler {
 
-    @ExceptionHandler(InvalidInputDataException.class)
-    public ResponseEntity<DroneCustomErrorResponse> handleInvalidInputException(InvalidInputDataException ex) {
-        return getDroneCustomErrorResponseForBadRequest(ex);
-    }
+    public static final String DATE_FORMAT = "dd-MMMM-yyyy hh:mm:ss";
 
     @ExceptionHandler(DroneNotFoundException.class)
     public ResponseEntity<DroneCustomErrorResponse> handleDroneNotFoundException(DroneNotFoundException ex) {
         DroneCustomErrorResponse errorResponse = new DroneCustomErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setStatusCode(HttpStatus.NOT_FOUND.value());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMM-yyyy hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         errorResponse.setDateAndTime(dateFormat.format(new Date()));
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
@@ -36,12 +33,13 @@ public class DroneExceptionHandler {
     public ResponseEntity<DroneCustomErrorResponse> handleDroneLowBatteryException(DroneLowBatteryException ex) {
         return getDroneCustomErrorResponseForBadRequest(ex);
     }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<DroneCustomErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
         DroneCustomErrorResponse errorResponse = new DroneCustomErrorResponse();
         errorResponse.setMessage(ex.getConstraintViolations().iterator().next().getMessageTemplate());
         errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMM-yyyy hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         errorResponse.setDateAndTime(dateFormat.format(new Date()));
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -51,7 +49,7 @@ public class DroneExceptionHandler {
         DroneCustomErrorResponse errorResponse = new DroneCustomErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMMM-yyyy hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         errorResponse.setDateAndTime(dateFormat.format(new Date()));
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

@@ -1,55 +1,39 @@
 package com.drones.mostafa.validator;
 
 
-import com.drones.mostafa.dto.DroneRegistrationRequest;
 import com.drones.mostafa.dto.MedicationLoadingRequest;
 import com.drones.mostafa.enums.State;
 import com.drones.mostafa.errorhandel.DroneLowBatteryException;
 import com.drones.mostafa.errorhandel.DroneOverLoadedException;
-import com.drones.mostafa.errorhandel.InvalidInputDataException;
 import com.drones.mostafa.model.Drone;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.time.temporal.ValueRange;
 import java.util.List;
 
 @Component
 public class DroneValidator {
-    public  void validateDroneToLoadMedications(Drone drone, List<MedicationLoadingRequest> medications) {
+    public void validateDroneToLoadMedications(Drone drone, List<MedicationLoadingRequest> medications) {
         Integer medicationsTotalWeight = getMedicationsTotalWeight(medications);
-        if(medicationsTotalWeight > drone.getRemainingWeight()){
-            throw new DroneOverLoadedException(String.format("Requested medication -%s- weight is over than the drone remaining weight %s",medicationsTotalWeight,drone.getRemainingWeight()));
+        if (medicationsTotalWeight > drone.getRemainingWeightInGrams()) {
+            throw new DroneOverLoadedException(String.format("Requested medication -%s- weight is over than the drone remaining weight %s", medicationsTotalWeight, drone.getRemainingWeightInGrams()));
         }
-        if(drone.getBatteryCapacityPercentage() < 25){
-            throw new DroneLowBatteryException(String.format("Requested Drone has low battery less than 25 and now it's %d",drone.getBatteryCapacityPercentage()));
+        if (drone.getBatteryCapacityPercentage() < 25) {
+            throw new DroneLowBatteryException(String.format("Requested Drone has low battery less than 25 and now it's %d", drone.getBatteryCapacityPercentage()));
         }
 
         drone.setState(State.LOADED);
-        Integer newRemainingWeight = drone.getRemainingWeight() - medicationsTotalWeight;
-        drone.setRemainingWeight(newRemainingWeight);
+        Integer newRemainingWeight = drone.getRemainingWeightInGrams() - medicationsTotalWeight;
+        drone.setRemainingWeightInGrams(newRemainingWeight);
     }
 
     private Integer getMedicationsTotalWeight(List<MedicationLoadingRequest> medications) {
         Integer medicationsTotalWeight = 0;
-        if(!CollectionUtils.isEmpty(medications)) {
+        if (!CollectionUtils.isEmpty(medications)) {
             for (MedicationLoadingRequest medication : medications) {
-                medicationsTotalWeight += medication.getWeight();
+                medicationsTotalWeight += medication.getWeightInGrams();
             }
         }
         return medicationsTotalWeight;
-    }
-
-    public void validateNewDrone(DroneRegistrationRequest request){
-        Integer weightInGrams = request.getWeightLimitInGrams();
-        if (weightInGrams > 500){
-            throw new InvalidInputDataException("Maximum Weight for a Drone is 500 gr");
-        }
-
-        Integer batteryCapacityPercentage = request.getBatteryCapacityPercentage();
-        if (!ValueRange.of(10,100).isValidValue(batteryCapacityPercentage)){
-            throw new InvalidInputDataException("Battery Range should be from 10% to 100% for a new Drone");
-        }
-
     }
 }

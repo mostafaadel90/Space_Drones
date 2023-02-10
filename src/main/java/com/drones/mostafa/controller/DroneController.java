@@ -27,14 +27,15 @@ public class DroneController {
     //Register a Drone
     @PostMapping(value = "/drones", consumes = "application/json", produces = "application/json")
     public ResponseEntity<DroneRegistrationResponse> registerDrone(@RequestBody @NotNull DroneRegistrationRequest droneRegistrationRequest) {
-        log.info("Drone Registration Request Received {}",droneRegistrationRequest.toString());
+        log.info("Drone Registration Request Received {}", droneRegistrationRequest.toString());
         DroneRegistrationResponse droneRegistrationResponse = droneService.registerDrone(droneRegistrationRequest);
         return new ResponseEntity<>(droneRegistrationResponse, HttpStatus.CREATED);
     }
+
     //Loading a drone with medication items
     @PostMapping(value = "/drones/{id}/medications", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Drone> loadMedicationsIntoDrone(@PathVariable String id,  @RequestBody @Valid List<MedicationLoadingRequest> medications){
-        log.info("Drone Loading with Medications {} Request Received for Drone with Id {}",medications.toString(),id);
+    public ResponseEntity<Drone> loadMedicationsIntoDrone(@PathVariable String id, @RequestBody @Valid List<MedicationLoadingRequest> medications) {
+        log.info("Drone Loading with Medications {} Request Received for Drone with Id {}", medications.toString(), id);
         Drone drone = droneService.loadMedicationsIntoDrone(Integer.valueOf(id), medications);
         return new ResponseEntity<>(drone, HttpStatus.CREATED);
     }

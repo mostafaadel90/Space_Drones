@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = DronesApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DronesControllerIT {
+class DronesControllerIT {
     @LocalServerPort
     private int port;
     @Autowired
@@ -47,8 +47,19 @@ public class DronesControllerIT {
 
     @Test
     @Order(2)
-    void registerNewDroneInvalidDataInput_400_BadRequest() {
+    void registerNewDroneInvalidDataInput_OverWeight_400_BadRequest() {
         DroneRegistrationRequest request = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 4000, 90, State.IDLE);
+        HttpEntity<DroneRegistrationRequest> entity = new HttpEntity<>(request);
+        ResponseEntity<DroneRegistrationResponse> response = restTemplate.postForEntity(createURLWithPort("/drones"), entity, DroneRegistrationResponse.class);
+        DroneRegistrationResponse responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @Order(2)
+    void registerNewDroneInvalidDataInput_OverBatteryCapacity_400_BadRequest() {
+        DroneRegistrationRequest request = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 400, 900, State.IDLE);
         HttpEntity<DroneRegistrationRequest> entity = new HttpEntity<>(request);
         ResponseEntity<DroneRegistrationResponse> response = restTemplate.postForEntity(createURLWithPort("/drones"), entity, DroneRegistrationResponse.class);
         DroneRegistrationResponse responseBody = response.getBody();
@@ -73,7 +84,7 @@ public class DronesControllerIT {
         Drone loadedDrone = loadedDroneResponse.getBody();
         assert loadedDrone != null;
         assertEquals(2, loadedDrone.getMedications().size());
-        assertEquals(100, loadedDrone.getRemainingWeight());
+        assertEquals(100, loadedDrone.getRemainingWeightInGrams());
         assertEquals(State.LOADED, loadedDrone.getState());
     }
 
@@ -136,7 +147,7 @@ public class DronesControllerIT {
         Drone loadedDrone = loadedDroneResponse.getBody();
         assert loadedDrone != null;
         assertEquals(2, loadedDrone.getMedications().size());
-        assertEquals(350, loadedDrone.getRemainingWeight());
+        assertEquals(350, loadedDrone.getRemainingWeightInGrams());
         assertEquals(State.LOADED, loadedDrone.getState());
 
          loadedDroneResponse = restTemplate.postForEntity(createURLWithPort("/drones/{id}/medications"), medicationsRequestEntity, Drone.class, responseBody.getId());
@@ -144,7 +155,7 @@ public class DronesControllerIT {
          loadedDrone = loadedDroneResponse.getBody();
         assert loadedDrone != null;
         assertEquals(4, loadedDrone.getMedications().size());
-        assertEquals(200, loadedDrone.getRemainingWeight());
+        assertEquals(200, loadedDrone.getRemainingWeightInGrams());
         assertEquals(State.LOADED, loadedDrone.getState());
     }
 

@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DroneRegistrationResponse {
-   private Integer id;
-   private String serialNumber;
+    private Integer id;
+    private String serialNumber;
 }

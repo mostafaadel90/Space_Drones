@@ -25,12 +25,12 @@ public class DroneServiceImpl implements DroneService {
     private DroneMapper droneMapper;
     private DroneValidator droneValidator;
     private MedicationMapper medicationMapper;
+
     @Override
     public DroneRegistrationResponse registerDrone(DroneRegistrationRequest droneRegistrationRequest) {
-        droneValidator.validateNewDrone(droneRegistrationRequest);
         Drone drone = droneMapper.mapDroneRegistrationRequestToDroneEntity(droneRegistrationRequest);
         drone.setSerialNumber(UUID.randomUUID().toString());
-        drone.setRemainingWeight(droneRegistrationRequest.getWeightLimitInGrams());
+        drone.setRemainingWeightInGrams(droneRegistrationRequest.getWeightLimitInGrams());
         Drone savedDrone = droneRepository.save(drone);
         return new DroneRegistrationResponse(savedDrone.getId(), savedDrone.getSerialNumber());
     }
@@ -43,12 +43,12 @@ public class DroneServiceImpl implements DroneService {
         }
         Drone drone = optionalDrone.get();
         droneValidator.validateDroneToLoadMedications(drone, medications);
-        List<Medication> medicationsList = medicationMapper.map(medications,drone);
+        List<Medication> medicationsList = medicationMapper.map(medications, drone);
         List<Medication> droneMedications = drone.getMedications();
         if (CollectionUtils.isEmpty(droneMedications)) {
             drone.setMedications(medicationsList);
         } else {
-            droneMedications.addAll(droneMedications.size()-1,medicationsList);
+            droneMedications.addAll(droneMedications.size() - 1, medicationsList);
         }
         droneRepository.saveAndFlush(drone);
         return drone;

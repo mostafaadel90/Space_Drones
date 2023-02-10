@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DroneMapper {
-    public Drone mapDroneRegistrationRequestToDroneEntity(DroneRegistrationRequest request){
+    public Drone mapDroneRegistrationRequestToDroneEntity(DroneRegistrationRequest request) {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.convertValue(request,Drone.class);
+        return objectMapper.convertValue(request, Drone.class);
     }
 }

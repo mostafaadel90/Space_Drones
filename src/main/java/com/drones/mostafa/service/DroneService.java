@@ -8,6 +8,7 @@ import com.drones.mostafa.model.Drone;
 import java.util.List;
 
 public interface DroneService {
-    DroneRegistrationResponse registerDrone(DroneRegistrationRequest droneRegistrationRequest) ;
-    Drone loadMedicationsIntoDrone (Integer droneId, List<MedicationLoadingRequest> medications);
+    DroneRegistrationResponse registerDrone(DroneRegistrationRequest droneRegistrationRequest);
+
+    Drone loadMedicationsIntoDrone(Integer droneId, List<MedicationLoadingRequest> medications);
 }

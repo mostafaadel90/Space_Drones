@@ -3,8 +3,14 @@ package com.drones.mostafa.model;
 import com.drones.mostafa.enums.Model;
 import com.drones.mostafa.enums.State;
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.validator.constraints.Range;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +26,23 @@ public class Drone {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Column(name = "serialNumber", unique = true ,updatable = false)
+    @Column(name = "serialNumber", unique = true, updatable = false)
     private String serialNumber;
     @Enumerated(EnumType.STRING)
     private Model model;
+    @Max(value = 500, message = "Maximum Weight for a Drone is 500 gr")
+    @Min(value = 1, message = "Minimum Weight for a Drone is 1 gr")
     private Integer weightLimitInGrams;
-    private Integer remainingWeight;
+    private Integer remainingWeightInGrams;
+    @Range(min = 10, max = 100, message = "Battery Range should be from 10% to 100% for a new Drone")
     private Integer batteryCapacityPercentage;
     @Enumerated(EnumType.STRING)
-    private State state;
+    private State state = State.IDLE;
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "drone",cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "drone", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Medication> medications = new ArrayList<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class MedicationMapper {
 
-    public List<Medication> map(List<MedicationLoadingRequest> medicationsRequest,Drone drone) {
+    public List<Medication> map(List<MedicationLoadingRequest> medicationsRequest, Drone drone) {
 
         return medicationsRequest.stream()
                 .filter(Objects::nonNull)
@@ -25,6 +25,6 @@ public class MedicationMapper {
         ObjectMapper mapper = new ObjectMapper();
         Medication medication = mapper.convertValue(medicationLoadingRequest, Medication.class);
         medication.setDrone(drone);
-        return medication ;
+        return medication;
     }
 }
