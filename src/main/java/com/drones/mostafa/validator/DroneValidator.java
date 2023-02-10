@@ -16,7 +16,7 @@ public class DroneValidator {
     public void validateDroneToLoadMedications(Drone drone, List<MedicationLoadingRequest> medications) {
         Integer medicationsTotalWeight = getMedicationsTotalWeight(medications);
         if (medicationsTotalWeight > drone.getRemainingWeightInGrams()) {
-            throw new DroneOverLoadedException(String.format("Requested medication -%s- weight is over than the drone remaining weight %s", medicationsTotalWeight, drone.getRemainingWeightInGrams()));
+            throw new DroneOverLoadedException(String.format("Requested medication weight is %d and it's over than the drone remaining weight %d", medicationsTotalWeight, drone.getRemainingWeightInGrams()));
         }
         if (drone.getBatteryCapacityPercentage() < 25) {
             throw new DroneLowBatteryException(String.format("Requested Drone has low battery less than 25 and now it's %d", drone.getBatteryCapacityPercentage()));
