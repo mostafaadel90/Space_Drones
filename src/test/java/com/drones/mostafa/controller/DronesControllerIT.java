@@ -103,7 +103,7 @@ public class DronesControllerIT {
     }
 
     @Test
-    @Order(5)
+    @Order(7)
     void loadMedicationsIntoDrone_WithLowBattery_400_Bad_Request() {
         DroneRegistrationRequest request = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 400, 20, State.IDLE);
         HttpEntity<DroneRegistrationRequest> droneRegistrationRequestEntity = new HttpEntity<>(request);
@@ -120,8 +120,8 @@ public class DronesControllerIT {
     }
 
     @Test
-    @Order(6)
-    void AppendMedicationsIntoDrone_Happy_201_Created() {
+    @Order(7)
+    void appendMedicationsIntoDrone_Happy_201_Created() {
         DroneRegistrationRequest request = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 500, 90, State.IDLE);
         HttpEntity<DroneRegistrationRequest> droneRegistrationRequestEntity = new HttpEntity<>(request);
         ResponseEntity<DroneRegistrationResponse> response = restTemplate.postForEntity(createURLWithPort("/drones"), droneRegistrationRequestEntity, DroneRegistrationResponse.class);
@@ -146,9 +146,24 @@ public class DronesControllerIT {
         assertEquals(4, loadedDrone.getMedications().size());
         assertEquals(200, loadedDrone.getRemainingWeight());
         assertEquals(State.LOADED, loadedDrone.getState());
-
-
     }
+
+    @Test
+    @Order(8)
+    void loadMedicationsIntoDroneWithInvalidCodePattern_400_Bad_Request() {
+        DroneRegistrationRequest request = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 400, 90, State.IDLE);
+        HttpEntity<DroneRegistrationRequest> droneRegistrationRequestEntity = new HttpEntity<>(request);
+        ResponseEntity<DroneRegistrationResponse> response = restTemplate.postForEntity(createURLWithPort("/drones"), droneRegistrationRequestEntity, DroneRegistrationResponse.class);
+        DroneRegistrationResponse responseBody = response.getBody();
+        assertNotNull(responseBody);
+
+        List<MedicationLoadingRequest> medicationList = Arrays.asList(new MedicationLoadingRequest("MEDICATION_10", 100, "MED_10", "image_10"),
+                new MedicationLoadingRequest("MEDICATION_20", 200, "ME$^D_20", "image_20"));
+        HttpEntity<List<MedicationLoadingRequest>> medicationsRequestEntity = new HttpEntity<>(medicationList);
+        ResponseEntity<Drone> loadedDroneResponse = restTemplate.postForEntity(createURLWithPort("/drones/{id}/medications"), medicationsRequestEntity, Drone.class, responseBody.getId());
+        assertEquals(HttpStatus.BAD_REQUEST, loadedDroneResponse.getStatusCode());
+    }
+
 
 
     private String createURLWithPort(String uri) {

@@ -5,6 +5,7 @@ import com.drones.mostafa.dto.DroneRegistrationResponse;
 import com.drones.mostafa.dto.MedicationLoadingRequest;
 import com.drones.mostafa.model.Drone;
 import com.drones.mostafa.service.DroneService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class DroneController {
     }
     //Loading a drone with medication items
     @PostMapping(value = "/drones/{id}/medications", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Drone> loadMedicationsIntoDrone(@PathVariable String id, @RequestBody List<MedicationLoadingRequest> medications){
+    public ResponseEntity<Drone> loadMedicationsIntoDrone(@PathVariable String id,  @RequestBody @Valid List<MedicationLoadingRequest> medications){
         log.info("Drone Loading with Medications {} Request Received for Drone with Id {}",medications.toString(),id);
         Drone drone = droneService.loadMedicationsIntoDrone(Integer.valueOf(id), medications);
         return new ResponseEntity<>(drone, HttpStatus.CREATED);
