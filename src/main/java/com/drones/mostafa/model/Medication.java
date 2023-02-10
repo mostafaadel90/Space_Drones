@@ -1,5 +1,6 @@
 package com.drones.mostafa.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class Medication {
     private String image;
     @ManyToOne
     @JoinColumn(name = "drone_id")
+    @JsonIgnore
     private Drone drone;
 
 }
