@@ -53,4 +53,14 @@ public class DroneServiceImpl implements DroneService {
         droneRepository.saveAndFlush(drone);
         return drone;
     }
+
+    @Override
+    public List<Medication> retrieveMedications(Integer droneId) {
+        Optional<Drone> optionalDrone = droneRepository.findById(droneId);
+        if (optionalDrone.isEmpty()) {
+            throw new DroneNotFoundException(String.format("Drone with ID %d is not found", droneId));
+        }
+        Drone drone = optionalDrone.get();
+        return drone.getMedications();
+    }
 }
