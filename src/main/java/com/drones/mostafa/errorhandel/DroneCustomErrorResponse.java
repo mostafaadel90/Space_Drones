@@ -7,5 +7,5 @@ public class DroneCustomErrorResponse {
 
     private String message;
     private int statusCode;
-    private String DateAndTime;
+    private String dateAndTime;
 }

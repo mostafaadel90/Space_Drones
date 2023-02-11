@@ -263,6 +263,7 @@ class DronesControllerIT {
         List<Drone> dronesReadyForLoading = dronesReadyForLoadingBody.getDrones();
         assertEquals(2, dronesReadyForLoading.size());
     }
+
     @Test
     @Order(12)
     void retrieveBatteryLevelWithDroneId_Happy_200_OK() {
@@ -275,9 +276,9 @@ class DronesControllerIT {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         HttpEntity requestEntity = new HttpEntity(headers);
         ResponseEntity<Integer> responseEntity = restTemplate.exchange("/drones/{id}/battery-level", HttpMethod.GET, requestEntity, Integer.class, registeredDrone.getId());
-        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Integer batteryLevel = responseEntity.getBody();
-        assertEquals(90,batteryLevel);
+        assertEquals(90, batteryLevel);
     }
 
     private String createURLWithPort(String uri) {

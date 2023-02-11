@@ -22,6 +22,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class DroneServiceImpl implements DroneService {
+    public static final String DRONE_WITH_ID_IS_NOT_FOUND = "Drone with ID %d is not found";
     private DroneRepository droneRepository;
     private DroneMapper droneMapper;
     private DroneValidator droneValidator;
@@ -40,7 +41,7 @@ public class DroneServiceImpl implements DroneService {
     public Drone loadMedicationsIntoDrone(Integer droneId, List<MedicationLoadingRequest> medications) {
         Optional<Drone> optionalDrone = droneRepository.findById(droneId);
         if (optionalDrone.isEmpty()) {
-            throw new DroneNotFoundException(String.format("Drone with ID %d is not found", droneId));
+            throw new DroneNotFoundException(String.format(DRONE_WITH_ID_IS_NOT_FOUND, droneId));
         }
         Drone drone = optionalDrone.get();
         droneValidator.validateDroneToLoadMedications(drone, medications);
@@ -59,7 +60,7 @@ public class DroneServiceImpl implements DroneService {
     public List<Medication> retrieveMedications(Integer droneId) {
         Optional<Drone> optionalDrone = droneRepository.findById(droneId);
         if (optionalDrone.isEmpty()) {
-            throw new DroneNotFoundException(String.format("Drone with ID %d is not found", droneId));
+            throw new DroneNotFoundException(String.format(DRONE_WITH_ID_IS_NOT_FOUND, droneId));
         }
         Drone drone = optionalDrone.get();
         return drone.getMedications();
@@ -68,7 +69,7 @@ public class DroneServiceImpl implements DroneService {
     @Override
     public List<Drone> retrieveAllDrones(boolean isReadyForLoading) {
         if (isReadyForLoading) {
-            return droneRepository.findAllByBatteryCapacityPercentageGreaterThanAndStateIn(25,List.of(State.IDLE,State.RETURNED));
+            return droneRepository.findAllByBatteryCapacityPercentageGreaterThanAndStateIn(25, List.of(State.IDLE, State.RETURNED));
         } else {
             return droneRepository.findAll();
         }
@@ -78,7 +79,7 @@ public class DroneServiceImpl implements DroneService {
     public Integer retrieveDroneBatteryLevel(Integer droneId) {
         Optional<Drone> optionalDrone = droneRepository.findById(droneId);
         if (optionalDrone.isEmpty()) {
-            throw new DroneNotFoundException(String.format("Drone with ID %d is not found", droneId));
+            throw new DroneNotFoundException(String.format(DRONE_WITH_ID_IS_NOT_FOUND, droneId));
         }
         Drone drone = optionalDrone.get();
         return drone.getBatteryCapacityPercentage();
