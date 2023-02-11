@@ -262,6 +262,22 @@ class DronesControllerIT {
         List<Drone> dronesReadyForLoading = dronesReadyForLoadingBody.getDrones();
         assertEquals(2, dronesReadyForLoading.size());
     }
+    @Test
+    @Order(12)
+    void retrieveBatteryLevelWithDroneId_Happy_200_OK() {
+        DroneRegistrationRequest request = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 400, 90, State.IDLE);
+        HttpEntity<DroneRegistrationRequest> entity = new HttpEntity<>(request);
+        ResponseEntity<DroneRegistrationResponse> response = restTemplate.postForEntity(createURLWithPort("/drones"), entity, DroneRegistrationResponse.class);
+        DroneRegistrationResponse registeredDrone = response.getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity requestEntity = new HttpEntity(headers);
+        ResponseEntity<Integer> responseEntity = restTemplate.exchange("/drones/{id}/battery-level", HttpMethod.GET, requestEntity, Integer.class, registeredDrone.getId());
+        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
+        Integer batteryLevel = responseEntity.getBody();
+        assertEquals(90,batteryLevel);
+    }
 
     private String createURLWithPort(String uri) {
         return "http://localhost:" + port + uri;

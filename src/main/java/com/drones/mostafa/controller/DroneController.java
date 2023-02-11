@@ -35,8 +35,9 @@ public class DroneController {
         Drone drone = droneService.loadMedicationsIntoDrone(Integer.valueOf(id), medications);
         return new ResponseEntity<>(drone, HttpStatus.CREATED);
     }
+
     //checking loaded medication items for a given drone
-    @GetMapping (value = "/drones/{id}/medications", consumes = "application/json", produces = "application/json")
+    @GetMapping(value = "/drones/{id}/medications", consumes = "application/json", produces = "application/json")
     public @ResponseBody ResponseEntity<MedicationByDroneResponse> retrieveMedications(@PathVariable String id) {
         log.info("retrieve medications list for drone with Id {}", id);
         List<Medication> medications = droneService.retrieveMedications(Integer.valueOf(id));
@@ -44,9 +45,10 @@ public class DroneController {
         response.setMedications(medications);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     //checking available drones for loading
-    @GetMapping (value = "/drones", consumes = "application/json", produces = "application/json")
-    public @ResponseBody ResponseEntity<RetrieveAllDronesResponse> retrieveAvailableDronesForLoading(@RequestParam(required = false,defaultValue = "false") boolean isReadyForLoading) {
+    @GetMapping(value = "/drones", consumes = "application/json", produces = "application/json")
+    public @ResponseBody ResponseEntity<RetrieveAllDronesResponse> retrieveAvailableDronesForLoading(@RequestParam(required = false, defaultValue = "false") boolean isReadyForLoading) {
         log.info("retrieve  list for drones that ready for loading {}", isReadyForLoading);
         List<Drone> drones = droneService.retrieveAllDrones(isReadyForLoading);
         RetrieveAllDronesResponse response = new RetrieveAllDronesResponse();
@@ -54,6 +56,11 @@ public class DroneController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
     //check drone battery level for a given drone
+    @GetMapping(value = "/drones/{id}/battery-level", consumes = "application/json", produces = "application/json")
+    public @ResponseBody ResponseEntity<Integer> retrieveBatteryLevel(@PathVariable String id) {
+        log.info("retrieve Battery Level for drone with Id {}", id);
+        Integer batteryLevel = droneService.retrieveDroneBatteryLevel(Integer.valueOf(id));
+        return new ResponseEntity<>(batteryLevel, HttpStatus.OK);
+    }
 }
