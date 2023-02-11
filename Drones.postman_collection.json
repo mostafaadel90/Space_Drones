@@ -1,0 +1,182 @@
+{
+	"info": {
+		"_postman_id": "cd46a649-6bd7-4ef6-adb5-37783b20cb80",
+		"name": "Drones",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RegisterNewDrone",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"model\": \"LIGHTWEIGHT\",\n    \"weightLimitInGrams\": 300,\n    \"batteryCapacityPercentage\": 80,\n    \"state\": \"IDLE\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/drones",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"drones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllDrones",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"model\": \"LIGHTWEIGHT\",\n    \"weightInGrams\": 200,\n    \"batteryCapacityPercentage\": 90,\n    \"state\": \"IDLE\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/drones?isReadyForLoading=true",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"drones"
+					],
+					"query": [
+						{
+							"key": "isReadyForLoading",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LoadDroneWithMedications",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"name\": \"MEDIATION_10\",\n        \"weightInGrams\": 100,\n        \"code\": \"MED_10\",\n        \"image\": \"image_10\"\n    },\n    {\n         \"name\": \"MEDICATION_200\",\n        \"weightInGrams\": 50,\n        \"code\": \"MED_20\",\n        \"image\": \"image_20\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/drones/5/medications",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"drones",
+						"5",
+						"medications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RetrieveMedicationsWithDroneId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"name\": \"MEDIATION_10\",\n        \"weightInGrams\": 100,\n        \"code\": \"MED_10\",\n        \"image\": \"image_10\"\n    },\n    {\n         \"name\": \"MEDICATION_200\",\n        \"weightInGrams\": 50,\n        \"code\": \"MED_20\",\n        \"image\": \"image_20\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/drones/5/medications",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"drones",
+						"5",
+						"medications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetBatteryLevelWithDroneId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"name\": \"MEDIATION_10\",\n        \"weightInGrams\": 100,\n        \"code\": \"MED_10\",\n        \"image\": \"image_10\"\n    },\n    {\n         \"name\": \"MEDICATION_200\",\n        \"weightInGrams\": 50,\n        \"code\": \"MED_20\",\n        \"image\": \"image_20\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/drones/5/battery-level",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"drones",
+						"5",
+						"battery-level"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
