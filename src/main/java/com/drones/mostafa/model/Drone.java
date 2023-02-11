@@ -23,10 +23,10 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Drone {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-    @Column(name = "serialNumber", unique = true, updatable = false)
+    @Column(unique = true, updatable = false)
     private String serialNumber;
     @Enumerated(EnumType.STRING)
     private Model model;

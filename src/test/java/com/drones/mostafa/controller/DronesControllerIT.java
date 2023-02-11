@@ -40,9 +40,10 @@ class DronesControllerIT {
         DroneRegistrationRequest request = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 400, 90, State.IDLE);
         HttpEntity<DroneRegistrationRequest> entity = new HttpEntity<>(request);
         ResponseEntity<DroneRegistrationResponse> response = restTemplate.postForEntity(createURLWithPort("/drones"), entity, DroneRegistrationResponse.class);
-        DroneRegistrationResponse responseBody = response.getBody();
-        assertNotNull(responseBody);
-        assertEquals(1, responseBody.getId());
+        DroneRegistrationResponse registeredDrone = response.getBody();
+        assertNotNull(registeredDrone);
+        assertNotNull(registeredDrone.getId());
+        assertNotNull(registeredDrone.getSerialNumber());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
