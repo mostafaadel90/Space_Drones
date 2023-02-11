@@ -3,6 +3,7 @@ package com.drones.mostafa.service;
 import com.drones.mostafa.dto.DroneRegistrationRequest;
 import com.drones.mostafa.dto.DroneRegistrationResponse;
 import com.drones.mostafa.dto.MedicationLoadingRequest;
+import com.drones.mostafa.enums.State;
 import com.drones.mostafa.errorhandel.DroneNotFoundException;
 import com.drones.mostafa.mapper.DroneMapper;
 import com.drones.mostafa.mapper.MedicationMapper;
@@ -62,5 +63,14 @@ public class DroneServiceImpl implements DroneService {
         }
         Drone drone = optionalDrone.get();
         return drone.getMedications();
+    }
+
+    @Override
+    public List<Drone> retrieveAllDrones(boolean isReadyForLoading) {
+        if (isReadyForLoading) {
+            return droneRepository.findAllByBatteryCapacityPercentageGreaterThanAndStateIn(25,List.of(State.IDLE,State.RETURNED));
+        } else {
+            return droneRepository.findAll();
+        }
     }
 }

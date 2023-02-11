@@ -1,9 +1,6 @@
 package com.drones.mostafa.controller;
 
-import com.drones.mostafa.dto.DroneRegistrationRequest;
-import com.drones.mostafa.dto.DroneRegistrationResponse;
-import com.drones.mostafa.dto.MedicationByDroneResponse;
-import com.drones.mostafa.dto.MedicationLoadingRequest;
+import com.drones.mostafa.dto.*;
 import com.drones.mostafa.model.Drone;
 import com.drones.mostafa.model.Medication;
 import com.drones.mostafa.service.DroneService;
@@ -38,6 +35,7 @@ public class DroneController {
         Drone drone = droneService.loadMedicationsIntoDrone(Integer.valueOf(id), medications);
         return new ResponseEntity<>(drone, HttpStatus.CREATED);
     }
+    //checking loaded medication items for a given drone
     @GetMapping (value = "/drones/{id}/medications", consumes = "application/json", produces = "application/json")
     public @ResponseBody ResponseEntity<MedicationByDroneResponse> retrieveMedications(@PathVariable String id) {
         log.info("retrieve medications list for drone with Id {}", id);
@@ -46,7 +44,16 @@ public class DroneController {
         response.setMedications(medications);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    //checking loaded medication items for a given drone
     //checking available drones for loading
+    @GetMapping (value = "/drones", consumes = "application/json", produces = "application/json")
+    public @ResponseBody ResponseEntity<RetrieveAllDronesResponse> retrieveAvailableDronesForLoading(@RequestParam(required = false,defaultValue = "false") boolean isReadyForLoading) {
+        log.info("retrieve  list for drones that ready for loading {}", isReadyForLoading);
+        List<Drone> drones = droneService.retrieveAllDrones(isReadyForLoading);
+        RetrieveAllDronesResponse response = new RetrieveAllDronesResponse();
+        response.setDrones(drones);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
     //check drone battery level for a given drone
 }

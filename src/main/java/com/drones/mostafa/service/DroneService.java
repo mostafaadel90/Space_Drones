@@ -14,4 +14,6 @@ public interface DroneService {
     Drone loadMedicationsIntoDrone(Integer droneId, List<MedicationLoadingRequest> medications);
 
     List<Medication> retrieveMedications(Integer id);
+
+    List<Drone> retrieveAllDrones(boolean isReadyForLoading);
 }

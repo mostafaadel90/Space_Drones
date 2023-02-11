@@ -1,14 +1,12 @@
 package com.drones.mostafa.controller;
 
 import com.drones.mostafa.DronesApplication;
-import com.drones.mostafa.dto.DroneRegistrationRequest;
-import com.drones.mostafa.dto.DroneRegistrationResponse;
-import com.drones.mostafa.dto.MedicationByDroneResponse;
-import com.drones.mostafa.dto.MedicationLoadingRequest;
+import com.drones.mostafa.dto.*;
 import com.drones.mostafa.enums.Model;
 import com.drones.mostafa.enums.State;
 import com.drones.mostafa.model.Drone;
 import com.drones.mostafa.model.Medication;
+import com.drones.mostafa.repository.DroneRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -18,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
-import org.springframework.util.MultiValueMap;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +31,8 @@ class DronesControllerIT {
     private int port;
     @Autowired
     TestRestTemplate restTemplate;
+    @Autowired
+    DroneRepository droneRepository;
 
     @Test
     @Order(1)
@@ -220,6 +219,48 @@ class DronesControllerIT {
         HttpEntity requestEntity = new HttpEntity(headers);
         ResponseEntity<MedicationByDroneResponse> medicationsResponse = restTemplate.exchange("/drones/{id}/medications", HttpMethod.GET, requestEntity, MedicationByDroneResponse.class, 1000);
         assertEquals(HttpStatus.NOT_FOUND, medicationsResponse.getStatusCode());
+    }
+
+    @Test
+    @Order(12)
+    void retrieveAllDronesThatReadyForLoading_Happy_200_OK() {
+        //clean all previous drones
+        droneRepository.deleteAll();
+        DroneRegistrationRequest request1 = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 400, 90, State.IDLE);
+        HttpEntity<DroneRegistrationRequest> entity1 = new HttpEntity<>(request1);
+        restTemplate.postForEntity(createURLWithPort("/drones"), entity1, DroneRegistrationResponse.class);
+
+        DroneRegistrationRequest request2 = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 400, 20, State.IDLE);
+        HttpEntity<DroneRegistrationRequest> entity2 = new HttpEntity<>(request2);
+        restTemplate.postForEntity(createURLWithPort("/drones"), entity2, DroneRegistrationResponse.class);
+
+        DroneRegistrationRequest request3 = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 400, 90, State.DELIVERING);
+        HttpEntity<DroneRegistrationRequest> entity3 = new HttpEntity<>(request3);
+        restTemplate.postForEntity(createURLWithPort("/drones"), entity3, DroneRegistrationResponse.class);
+
+        DroneRegistrationRequest request4 = new DroneRegistrationRequest(Model.LIGHTWEIGHT, 400, 90, State.IDLE);
+        HttpEntity<DroneRegistrationRequest> entity4 = new HttpEntity<>(request4);
+        restTemplate.postForEntity(createURLWithPort("/drones"), entity4, DroneRegistrationResponse.class);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity requestEntity = new HttpEntity(headers);
+        //Get All Drones
+        ResponseEntity<RetrieveAllDronesResponse> allDronesResponse = restTemplate.exchange("/drones", HttpMethod.GET, requestEntity, RetrieveAllDronesResponse.class);
+        assertEquals(HttpStatus.OK, allDronesResponse.getStatusCode());
+        RetrieveAllDronesResponse dronesBody = allDronesResponse.getBody();
+        assert dronesBody != null;
+        List<Drone> drones = dronesBody.getDrones();
+        assertEquals(4, drones.size());
+
+        //Get Drones That Ready for Loading
+        ResponseEntity<RetrieveAllDronesResponse> allDronesResponseReadyForLoading = restTemplate.exchange("/drones?isReadyForLoading=true", HttpMethod.GET, requestEntity, RetrieveAllDronesResponse.class);
+        assertEquals(HttpStatus.OK, allDronesResponseReadyForLoading.getStatusCode());
+        RetrieveAllDronesResponse dronesReadyForLoadingBody = allDronesResponseReadyForLoading.getBody();
+        assert dronesReadyForLoadingBody != null;
+        List<Drone> dronesReadyForLoading = dronesReadyForLoadingBody.getDrones();
+        assertEquals(2, dronesReadyForLoading.size());
     }
 
     private String createURLWithPort(String uri) {
