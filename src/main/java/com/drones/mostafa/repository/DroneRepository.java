@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface DroneRepository extends JpaRepository<Drone, Integer> {
     List<Drone> findAllByBatteryCapacityPercentageGreaterThanAndStateIn(Integer batteryCapacityPercentage, List<State> states);
+
+    List<Drone> findAllByBatteryCapacityPercentageGreaterThan(Integer i);
 }

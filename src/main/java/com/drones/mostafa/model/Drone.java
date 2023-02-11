@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.validator.constraints.Range;
 
 import java.util.ArrayList;
@@ -21,21 +23,29 @@ import java.util.Objects;
 @Setter
 @ToString
 @NoArgsConstructor
+@Audited
 public class Drone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @NotAudited
     private Integer id;
+
     @Column(unique = true, updatable = false)
+    @NotAudited
     private String serialNumber;
     @Enumerated(EnumType.STRING)
+    @NotAudited
     private Model model;
     @Max(value = 500, message = "Maximum Weight for a Drone is 500 gr")
     @Min(value = 1, message = "Minimum Weight for a Drone is 1 gr")
+    @NotAudited
     private Integer weightLimitInGrams;
+    @NotAudited
     private Integer remainingWeightInGrams;
     @Range(min = 10, max = 100, message = "Battery Range should be from 10% to 100% for a new Drone")
     private Integer batteryCapacityPercentage;
+    @NotAudited
     @Enumerated(EnumType.STRING)
     private State state = State.IDLE;
 
