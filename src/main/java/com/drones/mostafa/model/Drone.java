@@ -51,6 +51,7 @@ public class Drone {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "drone", cascade = CascadeType.ALL)
     @ToString.Exclude
+    @NotAudited
     private List<Medication> medications = new ArrayList<>();
 
     @Override
